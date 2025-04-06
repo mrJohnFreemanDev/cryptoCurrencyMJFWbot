@@ -1,0 +1,5 @@
+python-dotenv
+aiogram==3.3.0
+aiocache==0.12.2
+python-binance==1.0.17
+pytz
