@@ -69,4 +69,4 @@ And receive real-time or hourly price updates directly in Telegram.
 
 ---
 
-⚡ Created with ❤️ by Ivan — open to collaboration and freelance work.
+⚡ Created with ❤️ by Ivan Mudriakov — open to collaboration and freelance work.
