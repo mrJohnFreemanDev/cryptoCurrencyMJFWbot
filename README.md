@@ -64,7 +64,7 @@ And receive real-time or hourly price updates directly in Telegram.
 
 ## 📬 Contact
 
-- Telegram: [@Mr_John_Freeman_works](https://t.me/Mr_John_Freeman_works)
+- Telegram: [@ivan_mudriakov](https://t.me/ivan_mudriakov)
 - Email: [mr.john.freeman.works.rus@gmail.com](mailto:mr.john.freeman.works.rus@gmail.com)
 
 ---
