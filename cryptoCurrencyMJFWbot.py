@@ -15,7 +15,6 @@ import traceback
 import asyncio
 from aiocache import Cache
 
-# Загрузка токенов из файла .env
 load_dotenv("all.env")
 
 TELEGRAM_API_TOKEN = os.getenv('TELEGRAM_API_TOKEN')
@@ -25,14 +24,11 @@ BINANCE_SECRET_KEY = os.getenv('BINANCE_SECRET_KEY')
 if not TELEGRAM_API_TOKEN or not BINANCE_API_KEY or not BINANCE_SECRET_KEY:
     raise ValueError("Отсутствуют необходимые токены и ключи в .env файле")
 
-# Инициализация бота и диспетчера
 bot = Bot(token=TELEGRAM_API_TOKEN)
 dp = Dispatcher(storage=MemoryStorage())
 
-# Локальная временная зона
 LOCAL_TIMEZONE = pytz.timezone('Europe/Moscow')
 
-# Логирование
 logging.basicConfig(
     level=logging.ERROR,
     format='%(asctime)s - %(message)s',
@@ -43,14 +39,10 @@ logging.basicConfig(
     ]
 )
 
-# Константы и кэш
-CACHE_TIMEOUT = 10  # Время жизни кэша в секундах
+CACHE_TIMEOUT = 10
 SUPPORTED_SYMBOLS = set()
-
-# Асинхронный кэш для цен криптовалют
 cache = Cache(Cache.MEMORY)
 
-# Локализация сообщений
 MESSAGES = {
     "ru": {
         "start": "Привет! Чтобы узнать список команд, введите: /help",
@@ -108,16 +100,13 @@ MESSAGES = {
     }
 }
 
-# Логирование ошибок
 def log_error_to_file(exception):
     local_time = datetime.now(LOCAL_TIMEZONE).strftime('%Y-%m-%d %H:%M:%S')
     logging.error(f"{local_time} - {traceback.format_exc()}")
 
-# Определение языка пользователя
 def get_user_language(user):
     return user.language_code.split('-')[0] if user.language_code and user.language_code.split('-')[0] in MESSAGES else "en"
 
-# Загрузка поддерживаемых символов Binance
 async def load_supported_symbols():
     global SUPPORTED_SYMBOLS
     try:
@@ -128,7 +117,6 @@ async def load_supported_symbols():
         log_error_to_file(e)
         raise
 
-# Проверка троттлинга
 async def check_throttle(user_id):
     last_request_time = await cache.get(f"throttle_{user_id}")
     current_time = time.time()
@@ -137,19 +125,16 @@ async def check_throttle(user_id):
     await cache.set(f"throttle_{user_id}", current_time, ttl=CACHE_TIMEOUT)
     return True
 
-# Команда /start
 @dp.message(Command("start"))
 async def start_command(message: Message):
     lang = get_user_language(message.from_user)
     await message.reply(MESSAGES[lang]["start"])
 
-# Команда /help
 @dp.message(Command("help"))
 async def help_command(message: Message):
     lang = get_user_language(message.from_user)
     await message.reply(MESSAGES[lang]["help"])
 
-# Команда /list
 @dp.message(Command("list"))
 async def list_command(message: Message):
     lang = get_user_language(message.from_user)
@@ -157,7 +142,6 @@ async def list_command(message: Message):
     response = MESSAGES[lang]["list"].format(currencies="\n".join(f"- {currency}" for currency in base_currencies))
     await message.reply(response)
 
-# Команда /price
 @dp.message(Command("price"))
 async def price_command(message: Message):
     lang = get_user_language(message.from_user)
@@ -199,7 +183,6 @@ async def price_command(message: Message):
 
     await message.reply("\n".join(response))
 
-# Команда /history
 @dp.message(Command("history"))
 async def history_command(message: Message):
     lang = get_user_language(message.from_user)
@@ -223,7 +206,6 @@ async def history_command(message: Message):
         log_error_to_file(e)
         await message.reply(MESSAGES[lang]["history_error"])
 
-# Запуск бота
 async def main():
     global client
     try:
